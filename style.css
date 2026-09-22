@@ -232,7 +232,6 @@ select.input-glass option { background: #000; color: #fff; }
     background: rgba(212, 175, 55, 0.05);
 }
 
-/* Esconde o radio nativo, mas mantém funcional para acessibilidade */
 .radio-label input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
@@ -246,7 +245,6 @@ select.input-glass option { background: #000; color: #fff; }
     position: relative;
 }
 
-/* Estado checado: preenche com dourado e neon */
 .radio-label input[type="radio"]:checked {
     border-color: var(--gold);
     box-shadow: 0 0 10px var(--gold-glow);
@@ -264,7 +262,6 @@ select.input-glass option { background: #000; color: #fff; }
     border-radius: 50%;
 }
 
-/* Muda a cor do texto quando selecionado */
 .radio-label:has(input[type="radio"]:checked) {
     border-color: var(--gold);
     color: #fff;
