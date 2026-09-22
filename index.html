@@ -10,13 +10,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     
     <link rel="stylesheet" href="style.css">
-    <!-- Biblioteca Chart.js para o Gráfico Radar -->
+    
+    <!-- Bibliotecas Externas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <canvas id="particles-bg"></canvas>
 
-    <!-- Tela 1: Boas-Vindas -->
     <div id="welcome-screen" class="screen active">
         <div class="glass-panel text-center welcome-content">
             <h1 class="main-title"><span class="gold-text">D.N.A.</span> <span class="silver-text">MENTORIA</span></h1>
@@ -29,15 +31,12 @@
         </div>
     </div>
 
-    <!-- Tela 2: Credenciamento -->
     <div id="register-screen" class="screen">
         <div class="glass-panel welcome-content">
             <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
-            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">
-                Configure seu acesso corporativo.
-            </p>
+            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">Configure seu acesso corporativo.</p>
             <form id="registration-form">
-                <div class="input-group"><label>Nome Completo (Digite 'admin' para teste rápido)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
+                <div class="input-group"><label>Nome Completo (Digite 'admin' para bypass)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
                 <div class="input-group"><label>WhatsApp</label><input type="tel" id="user-phone" required placeholder="(00) 00000-0000"></div>
                 <div class="input-group"><label>E-mail Corporativo</label><input type="email" id="user-email" required placeholder="seuemail@praticamente.com"></div>
                 <div class="input-group"><label>Origem do Acesso</label><input type="text" id="user-referral" placeholder="Ex: Indicação, RH..."></div>
@@ -46,7 +45,6 @@
         </div>
     </div>
 
-    <!-- Tela Intermediária: Skeleton Loading (Esqueleto de Carregamento) -->
     <div id="loading-screen" class="screen">
         <div class="container" style="max-width: 700px; width: 100%;">
             <div class="glass-panel">
@@ -63,7 +61,6 @@
         </div>
     </div>
 
-    <!-- Tela 3: Dashboard Principal -->
     <div id="main-screen" class="screen">
         <div id="progress-container"><div id="progress-fill"></div></div>
 
@@ -82,9 +79,13 @@
                     </div>
                 </div>
 
+                <!-- Container do Vídeo YT -->
                 <div class="video-container" id="video-area">
-                    <span class="video-label">[ Briefing Semanal em Vídeo ]</span>
+                    <div id="youtube-player"></div>
+                    <div id="video-overlay" class="video-overlay"><span class="video-label">Carregando Briefing...</span></div>
                 </div>
+                <div id="video-progress-bar"><div id="video-progress-fill"></div></div>
+                <p id="video-lock-msg" style="color: var(--gold-main); font-size: 0.8rem; text-align: center; margin-bottom: 20px; display: none;">Assista a 90% do vídeo para desbloquear seu Plano de Ação.</p>
                 
                 <div class="week-selector" id="weekSelector"></div>
                 <h2 id="weekTitle" class="gold-text week-title">Carregando...</h2>
@@ -98,27 +99,33 @@
                         <h4 id="diagnostico-titulo" style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">Aguardando dados...</h4>
                         <p id="diagnostico-desc" style="color: var(--gold-light); font-size: 0.85rem;"></p>
                     </div>
-                    <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center;">
+                    <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center; margin-bottom: 30px;">
                         <canvas id="radarChart"></canvas>
                     </div>
+                    <!-- Botão de Exportação PDF -->
+                    <button id="btn-export-pdf" class="btn-gold btn-full" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="font-size: 1.2rem;">📄</span> Gerar Relatório Executivo (PDF)
+                    </button>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                    <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Todas as alterações são salvas automaticamente.</span>
-                    <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar Manualmente</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+                    <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Salvo automaticamente.</span>
+                    <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Onboarding Modal -->
     <div id="onboarding-modal" class="onboarding-overlay">
         <div class="onboarding-box glass-panel">
-            <h3 class="gold-text" id="onboarding-title">Bem-vindo ao Praticamente</h3>
+            <h3 class="gold-text" id="onboarding-title">Bem-vindo</h3>
             <p id="onboarding-text" style="margin: 15px 0; color: #e0e0e0; line-height: 1.5;"></p>
             <button id="btn-onboarding-next" class="btn-gold btn-full">Próximo Passo</button>
         </div>
     </div>
+
+    <!-- Div oculta usada apenas para gerar o PDF formatado -->
+    <div id="pdf-content" style="display: none; padding: 40px; background: white; color: black; font-family: sans-serif;"></div>
 
     <script src="script.js"></script>
 </body>
