@@ -1,0 +1,16 @@
+{
+  "name": "D.N.A. Mentoria PráticaMente",
+  "short_name": "DNA Mentoria",
+  "description": "Liderança, carreira e vida em equilíbrio.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070709",
+  "theme_color": "#f8b500",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1752/1752535.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

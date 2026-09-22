@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DNA do Líder - PráticaMente</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f8b500">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <link rel="stylesheet" href="style.css">
+    <!-- Biblioteca Chart.js para o Gráfico Radar -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="particles-bg"></canvas>
+
+    <!-- Tela 1: Boas-Vindas -->
+    <div id="welcome-screen" class="screen active">
+        <div class="glass-panel text-center welcome-content">
+            <h1 class="main-title"><span class="gold-text">D.N.A.</span> <span class="silver-text">MENTORIA</span></h1>
+            <p class="subtitle">Liderança, carreira e vida em equilíbrio.</p>
+            <div class="welcome-text">
+                <p>Olá, tudo bem?</p>
+                <p>Bem-vindo ao seu ambiente de evolução prática. Durante as próximas <strong>12 semanas</strong>, este será o seu guia de execução e mapeamento de perfil.</p>
+            </div>
+            <button id="btn-next-register" class="btn-gold btn-full">Avançar</button>
+        </div>
+    </div>
+
+    <!-- Tela 2: Credenciamento -->
+    <div id="register-screen" class="screen">
+        <div class="glass-panel welcome-content">
+            <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
+            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">
+                Configure seu acesso corporativo.
+            </p>
+            <form id="registration-form">
+                <div class="input-group"><label>Nome Completo (Digite 'admin' para teste rápido)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
+                <div class="input-group"><label>WhatsApp</label><input type="tel" id="user-phone" required placeholder="(00) 00000-0000"></div>
+                <div class="input-group"><label>E-mail Corporativo</label><input type="email" id="user-email" required placeholder="seuemail@praticamente.com"></div>
+                <div class="input-group"><label>Origem do Acesso</label><input type="text" id="user-referral" placeholder="Ex: Indicação, RH..."></div>
+                <button type="submit" class="btn-gold btn-full" style="margin-top: 15px;">Iniciar Jornada</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tela Intermediária: Skeleton Loading (Esqueleto de Carregamento) -->
+    <div id="loading-screen" class="screen">
+        <div class="container" style="max-width: 700px; width: 100%;">
+            <div class="glass-panel">
+                <div class="skeleton" style="width: 40%; height: 20px; margin-bottom: 30px;"></div>
+                <div class="skeleton" style="width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: 25px;"></div>
+                <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                </div>
+                <div class="skeleton" style="width: 60%; height: 25px; margin-bottom: 20px;"></div>
+                <div class="skeleton" style="width: 100%; height: 120px; border-radius: 12px; margin-bottom: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela 3: Dashboard Principal -->
+    <div id="main-screen" class="screen">
+        <div id="progress-container"><div id="progress-fill"></div></div>
+
+        <header class="glass-header">
+            <h2 class="gold-text" style="font-size: 1.2rem;">DNA DO LÍDER</h2>
+            <div class="subtitle" style="font-size: 0.7rem; color: var(--gold-light);">Direção • Navegação • Ação</div>
+        </header>
+
+        <div class="container">
+            <div class="glass-panel" id="main-panel">
+                <div class="panel-header">
+                    <div id="user-greeting" class="greeting-text"></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btn-focus" class="btn-logout" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
+                        <button id="btn-logout" class="btn-logout">Sair</button>
+                    </div>
+                </div>
+
+                <div class="video-container" id="video-area">
+                    <span class="video-label">[ Briefing Semanal em Vídeo ]</span>
+                </div>
+                
+                <div class="week-selector" id="weekSelector"></div>
+                <h2 id="weekTitle" class="gold-text week-title">Carregando...</h2>
+                
+                <div id="formContainer"></div>
+
+                <div id="resultsContainer" class="results-area">
+                    <h3 class="gold-text" style="margin-bottom: 15px;">Seu Mapa D.N.A. Estratégico</h3>
+                    <p style="font-size: 0.9rem; color: var(--silver-main); margin-bottom: 20px;">Análise lexical baseada na sua PNL durante a jornada.</p>
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <h4 id="diagnostico-titulo" style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">Aguardando dados...</h4>
+                        <p id="diagnostico-desc" style="color: var(--gold-light); font-size: 0.85rem;"></p>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Todas as alterações são salvas automaticamente.</span>
+                    <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar Manualmente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-overlay">
+        <div class="onboarding-box glass-panel">
+            <h3 class="gold-text" id="onboarding-title">Bem-vindo ao Praticamente</h3>
+            <p id="onboarding-text" style="margin: 15px 0; color: #e0e0e0; line-height: 1.5;"></p>
+            <button id="btn-onboarding-next" class="btn-gold btn-full">Próximo Passo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
