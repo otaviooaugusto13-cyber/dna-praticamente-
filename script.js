@@ -367,6 +367,3 @@ function animateParticles() {
     }
 }
 initParticles(); animateParticles();
-        });
-    });
-</script>
