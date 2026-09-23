@@ -1,316 +1,132 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRATICAMENTE | Diagnóstico Liderança Elite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DNA do Líder - PráticaMente</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/phosphor-icons"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("UFhvGVkmgV0VpWyKALl7S");</script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f8b500">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Bibliotecas Externas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
+    <canvas id="particles-bg"></canvas>
 
-    <div class="main-bg-texture"></div>
-    <canvas id="neural-bg"></canvas>
-
-    <div id="banner-recuperar" class="banner-recuperar hidden">
-        <div class="banner-content">
-            <i class="ph-clock-clockwise"></i>
-            <div>
-                <p class="banner-title">Encontramos seu diagnóstico anterior!</p>
-                <p class="banner-sub">Deseja ver o resultado ou refazer o teste?</p>
+    <div id="welcome-screen" class="screen active">
+        <div class="glass-panel text-center welcome-content">
+            <h1 class="main-title"><span class="gold-text">D.N.A.</span> <span class="silver-text">MENTORIA</span></h1>
+            <p class="subtitle">Liderança, carreira e vida em equilíbrio.</p>
+            <div class="welcome-text">
+                <p>Olá, tudo bem?</p>
+                <p>Bem-vindo ao seu ambiente de evolução prática. Durante as próximas <strong>12 semanas</strong>, este será o seu guia de execução e mapeamento de perfil.</p>
             </div>
-            <div class="banner-btns">
-                <button onclick="recuperarResultado()" class="banner-btn-ver">Ver Resultado</button>
-                <button onclick="reiniciarTeste()" class="banner-btn-refazer">Refazer</button>
+            <button id="btn-next-register" class="btn-gold btn-full">Avançar</button>
+        </div>
+    </div>
+
+    <div id="register-screen" class="screen">
+        <div class="glass-panel welcome-content">
+            <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
+            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">Configure seu acesso corporativo.</p>
+            <form id="registration-form">
+                <div class="input-group"><label>Nome Completo (Digite 'admin' para bypass)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
+                <div class="input-group"><label>WhatsApp</label><input type="tel" id="user-phone" required placeholder="(00) 00000-0000"></div>
+                <div class="input-group"><label>E-mail Corporativo</label><input type="email" id="user-email" required placeholder="seuemail@praticamente.com"></div>
+                <div class="input-group"><label>Origem do Acesso</label><input type="text" id="user-referral" placeholder="Ex: Indicação, RH..."></div>
+                <button type="submit" class="btn-gold btn-full" style="margin-top: 15px;">Iniciar Jornada</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="screen">
+        <div class="container" style="max-width: 700px; width: 100%;">
+            <div class="glass-panel">
+                <div class="skeleton" style="width: 40%; height: 20px; margin-bottom: 30px;"></div>
+                <div class="skeleton" style="width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: 25px;"></div>
+                <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                </div>
+                <div class="skeleton" style="width: 60%; height: 25px; margin-bottom: 20px;"></div>
+                <div class="skeleton" style="width: 100%; height: 120px; border-radius: 12px; margin-bottom: 20px;"></div>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        
-        <div id="screen-intro" class="glass-panel">
-            <div class="brand-logo"><span class="silver-text">Prática</span><span class="gold-text">Mente</span></div>
-            
-            <div class="intro-content">
-                <div class="method-badge"><i class="ph-scroll"></i> SABEDORIA MILENAR (2.500 ANOS)</div>
-                
-                <h1 class="intro-title">DESCUBRA A <span class="gold">RAIZ OCULTA</span> DOS SEUS COMPORTAMENTOS</h1>
-                
-                <div class="pain-box">
-                    <p class="pain-header">POR QUE FAZER ESTE DIAGNÓSTICO?</p>
-                    <p class="pain-desc">
-                        Você explode, trava ou se sobrecarrega "do nada". Existe um <strong>padrão inconsciente</strong> rodando na sua mente agora.
-                        <br><br>
-                        Nós vamos identificar exatamente qual é a sua "ferida original" e entregar o <strong>antídoto prático</strong> para você liderar com o dobro de potência e metade do esforço.
-                    </p>
-                </div>
+    <div id="main-screen" class="screen">
+        <div id="progress-container"><div id="progress-fill"></div></div>
 
-                <div class="instruction-box">
-                    <p class="instruction-title">⚠️ REGRAS PARA MÁXIMA PRECISÃO:</p>
-                    
-                    <div class="rule-item">
-                        <i class="ph-hourglass-medium gold"></i>
-                        <span><strong>Faça com Calma:</strong> Não existe certo ou errado. Respire e sinta a resposta.</span>
-                    </div>
+        <header class="glass-header">
+            <h2 class="gold-text" style="font-size: 1.2rem;">DNA DO LÍDER</h2>
+            <div class="subtitle" style="font-size: 0.7rem; color: var(--gold-light);">Direção • Navegação • Ação</div>
+        </header>
 
-                    <div class="rule-item">
-                        <i class="ph-rewind-circle gold"></i>
-                        <span><strong>Volte no Tempo:</strong> Responda pensando em como você era entre os <strong>18 e 23 anos</strong>. É nessa fase que sua essência era pura, antes das "máscaras" da vida adulta.</span>
-                    </div>
-
-                    <div class="rule-item">
-                        <i class="ph-fingerprint gold"></i>
-                        <span><strong>Seja Real:</strong> Marque quem você <strong>É</strong> (nos bastidores), não quem você gostaria de ser no palco.</span>
+        <div class="container">
+            <div class="glass-panel" id="main-panel">
+                <div class="panel-header">
+                    <div id="user-greeting" class="greeting-text"></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btn-focus" class="btn-logout" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
+                        <button id="btn-logout" class="btn-logout">Sair</button>
                     </div>
                 </div>
 
-                <form id="capture-form" action="https://formspree.io/f/xwvoklpq" method="POST">
-                    
-                    <div class="input-group">
-                        <i class="ph-user input-icon"></i>
-                        <input type="text" name="nome" id="input-name" class="input-glass" placeholder="Seu Primeiro Nome" required autocomplete="off">
-                    </div>
+                <!-- Container do Vídeo YT -->
+                <div class="video-container" id="video-area">
+                    <div id="youtube-player"></div>
+                    <div id="video-overlay" class="video-overlay"><span class="video-label">Carregando Briefing...</span></div>
+                </div>
+                <div id="video-progress-bar"><div id="video-progress-fill"></div></div>
+                <p id="video-lock-msg" style="color: var(--gold-main); font-size: 0.8rem; text-align: center; margin-bottom: 20px; display: none;">Assista a 90% do vídeo para desbloquear seu Plano de Ação.</p>
+                
+                <div class="week-selector" id="weekSelector"></div>
+                <h2 id="weekTitle" class="gold-text week-title">Carregando...</h2>
+                
+                <div id="formContainer"></div>
 
-                    <div class="input-group">
-                        <i class="ph-whatsapp-logo input-icon"></i>
-                        <input type="tel" name="whatsapp" id="input-phone" class="input-glass" placeholder="Seu WhatsApp (DDD+Núm)" required autocomplete="off">
+                <div id="resultsContainer" class="results-area">
+                    <h3 class="gold-text" style="margin-bottom: 15px;">Seu Mapa D.N.A. Estratégico</h3>
+                    <p style="font-size: 0.9rem; color: var(--silver-main); margin-bottom: 20px;">Análise lexical baseada na sua PNL durante a jornada.</p>
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <h4 id="diagnostico-titulo" style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">Aguardando dados...</h4>
+                        <p id="diagnostico-desc" style="color: var(--gold-light); font-size: 0.85rem;"></p>
                     </div>
-
-                    <div class="input-group">
-                        <i class="ph-envelope input-icon"></i>
-                        <input type="email" name="_replyto" id="input-email" class="input-glass" placeholder="Seu Melhor Email" required autocomplete="off">
+                    <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center; margin-bottom: 30px;">
+                        <canvas id="radarChart"></canvas>
                     </div>
-
-                    <div class="input-group">
-                        <i class="ph-share-network input-icon"></i>
-                        <select name="origem" id="input-source" class="input-glass" required>
-                            <option value="" disabled selected>Onde nos conheceu?</option>
-                            <option value="Instagram">Instagram</option>
-                            <option value="WhatsApp">Grupo VIP</option>
-                            <option value="YouTube">YouTube</option>
-                            <option value="Indicação">Indicação</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-cta">
-                        INICIAR DIAGNÓSTICO
+                    <!-- Botão de Exportação PDF -->
+                    <button id="btn-export-pdf" class="btn-gold btn-full" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="font-size: 1.2rem;">📄</span> Gerar Relatório Executivo (PDF)
                     </button>
-                </form>
+                </div>
 
-                <p class="secure-text"><i class="ph-shield-check"></i> Ambiente Criptografado & Seguro.</p>
-            </div>
-        </div>
-
-        <div id="screen-contexto" class="glass-panel hidden">
-            <div class="brand-logo"><span class="silver-text">Prática</span><span class="gold-text">Mente</span></div>
-
-            <div class="text-center" style="margin-bottom: 30px;">
-                <div class="method-badge"><i class="ph-crosshair"></i> PERSONALIZAÇÃO DO DIAGNÓSTICO</div>
-                <h2 class="question-text" style="margin-bottom: 10px;">Qual área da sua vida você quer entender melhor?</h2>
-                <p style="color: #888; font-size: 0.85rem;">Seu resultado será adaptado para essa área.</p>
-            </div>
-
-            <div class="contexto-grid">
-
-                <button class="btn-contexto" onclick="selecionarContexto('lider')">
-                    <span class="ctx-icon">🏢</span>
-                    <span class="ctx-title">Liderança & Negócios</span>
-                    <span class="ctx-desc">Sou líder, gestor ou empresário</span>
-                </button>
-
-                <button class="btn-contexto" onclick="selecionarContexto('familia')">
-                    <span class="ctx-icon">👨‍👩‍👧</span>
-                    <span class="ctx-title">Família & Filhos</span>
-                    <span class="ctx-desc">Quero melhorar minha relação em casa</span>
-                </button>
-
-                <button class="btn-contexto" onclick="selecionarContexto('relacionamento')">
-                    <span class="ctx-icon">💑</span>
-                    <span class="ctx-title">Relacionamento & Casal</span>
-                    <span class="ctx-desc">Quero entender meus padrões no amor</span>
-                </button>
-
-                <button class="btn-contexto" onclick="selecionarContexto('pessoal')">
-                    <span class="ctx-icon">🌱</span>
-                    <span class="ctx-title">Desenvolvimento Pessoal</span>
-                    <span class="ctx-desc">Quero me conhecer e evoluir</span>
-                </button>
-
-                <button class="btn-contexto" onclick="selecionarContexto('carreira')">
-                    <span class="ctx-icon">🎯</span>
-                    <span class="ctx-title">Carreira & Propósito</span>
-                    <span class="ctx-desc">Quero clareza no meu caminho profissional</span>
-                </button>
-
-            </div>
-        </div>
-
-        <div id="screen-quiz" class="glass-panel hidden">
-            <div class="brand-logo"><span class="silver-text">Prática</span><span class="gold-text">Mente</span></div>
-            <div class="progress-track"><div id="progress-bar" class="progress-fill"></div></div>
-
-            <div class="text-center">
-                <p class="step-counter">ANÁLISE <span id="q-number"></span></p>
-                <h2 id="q-text" class="question-text">Carregando...</h2>
-            </div>
-
-            <div id="options-container" class="options-list"></div>
-        </div>
-
-        <div id="screen-loading" class="glass-panel hidden">
-            <div class="loader-wrapper">
-                <div class="spinner"></div>
-                <h2 style="margin-bottom: 20px; font-family: 'Cinzel', serif;">Processando Psique...</h2>
-                <div class="console-text">
-                    <p>> Compilando Assinatura Neural...</p>
-                    <p>> Mapeando feridas emocionais...</p>
-                    <p>> Identificando Válvula de Escape (Asa)...</p>
-                    <p class="gold">> Gerando Relatório Final...</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+                    <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Salvo automaticamente.</span>
+                    <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar</button>
                 </div>
             </div>
         </div>
-
-        <div id="screen-result" class="glass-panel hidden">
-            <div class="text-center">
-                <div class="protocol-id">PROTOCOLO: <span id="protocol-code">#PM-0000</span></div>
-                <div class="result-badge">DIAGNÓSTICO CONCLUÍDO</div>
-                <div id="res-contexto" class="contexto-badge-result"></div>
-                
-                <p class="user-greeting">RELATÓRIO DE <span id="user-name-result" class="gold">LÍDER</span></p>
-                
-                <h1 id="res-archetype" class="archetype-title">ARQUÉTIPO</h1>
-                
-                <div class="archetype-subtitle">
-                    <div class="tag-group">
-                        <div class="tag-box">
-                            <span class="tag-label">TIPO DOMINANTE</span>
-                            <span id="res-type" class="tag-value">X</span>
-                        </div>
-                    </div>
-                    <div class="tag-group">
-                        <div class="tag-box border-gold">
-                            <span class="tag-label">ASA (WING)</span>
-                            <span id="res-wing-calc" class="tag-value">Y</span>
-                        </div>
-                    </div>
-                    <div class="tag-group">
-                        <div class="tag-box">
-                            <span class="tag-label">INSTINTO</span>
-                            <span id="res-subtype" class="tag-value">Z</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-container" style="position: relative; height:250px; width:100%; margin-bottom: 40px;">
-                <canvas id="radarChart"></canvas>
-            </div>
-
-            <div class="skills-section">
-                <h3 class="section-title"><i class="ph-sliders-horizontal"></i> MATRIZ DE COMPETÊNCIAS</h3>
-                <div class="skill-row">
-                    <div class="skill-info"><span>Influência & Persuasão</span><span id="score-infl">0%</span></div>
-                    <div class="skill-bar-bg"><div id="bar-infl" class="skill-bar-fill gold-fill"></div></div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info"><span>Resiliência Emocional</span><span id="score-res">0%</span></div>
-                    <div class="skill-bar-bg"><div id="bar-res" class="skill-bar-fill blue-fill"></div></div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info"><span>Visão Estratégica</span><span id="score-est">0%</span></div>
-                    <div class="skill-bar-bg"><div id="bar-est" class="skill-bar-fill green-fill"></div></div>
-                </div>
-            </div>
-
-            <div class="detailed-report-grid">
-                
-                <div class="report-column">
-                    <div class="report-block">
-                        <h4 class="report-title text-orange"><i class="ph-brain"></i> ESSÊNCIA (Quem eu sou)</h4>
-                        <ul id="list-essencia" class="report-list"></ul>
-                    </div>
-                    <div class="report-block">
-                        <h4 class="report-title text-yellow"><i class="ph-heart"></i> FORÇAS (Luz do tipo)</h4>
-                        <ul id="list-forcas" class="report-list"></ul>
-                    </div>
-                    <div class="report-block">
-                        <h4 class="report-title text-blue"><i class="ph-arrows-left-right"></i> MOVIMENTO DE DESEQUILÍBRIO</h4>
-                        <ul id="list-desequilibrio" class="report-list"></ul>
-                    </div>
-                    <div class="report-block">
-                        <h4 class="report-title text-gold-bright"><i class="ph-sparkle"></i> POTENCIAL MÁXIMO</h4>
-                        <ul id="list-potencial" class="report-list"></ul>
-                    </div>
-                </div>
-
-                <div class="report-column">
-                    <div class="report-block">
-                        <h4 class="report-title text-red"><i class="ph-warning-circle"></i> DESAFIOS (Sombra do tipo)</h4>
-                        <ul id="list-desafios" class="report-list"></ul>
-                    </div>
-                    <div class="report-block">
-                        <h4 class="report-title text-orange-dark"><i class="ph-target"></i> PADRÃO INCONSCIENTE</h4>
-                        <p id="txt-padrao-frase" class="highlight-quote"></p>
-                        <div class="sub-list-container">
-                            <p class="sub-label">Mas o preço é alto:</p>
-                            <ul id="list-padrao-preco" class="report-list"></ul>
-                        </div>
-                        <p id="txt-padrao-acao" class="action-arrow"></p>
-                    </div>
-                    <div class="report-block box-practices">
-                        <h4 class="report-title text-green"><i class="ph-plant"></i> PRÁTICAS PRÁTICAMENTE</h4>
-                        <ul id="list-praticas" class="report-list"></ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cta-box">
-                <p class="cta-text">Receba o manual completo de operação da sua mente:</p>
-                <button onclick="baixarEEntrar()" class="btn-cta">
-                    <i class="ph-whatsapp-logo" style="margin-right: 10px; font-size: 1.3rem; vertical-align: middle;"></i>
-                    ACESSAR MANUAL NO GRUPO
-                </button>
-                <button onclick="reiniciarTeste()" class="btn-reiniciar">
-                    <i class="ph-arrow-counter-clockwise"></i> Refazer o Teste
-                </button>
-            </div>
-
-            <!-- NOVA SEÇÃO DE FEEDBACK (ESTRELAS) -->
-            <div class="feedback-section">
-                <p class="feedback-title">Qual a sua nota para a precisão deste diagnóstico?</p>
-                <div class="star-rating" id="star-rating">
-                    <i class="ph-star" data-rating="1"></i>
-                    <i class="ph-star" data-rating="2"></i>
-                    <i class="ph-star" data-rating="3"></i>
-                    <i class="ph-star" data-rating="4"></i>
-                    <i class="ph-star" data-rating="5"></i>
-                </div>
-                <p id="feedback-msg" class="feedback-msg hidden">Avaliação enviada! Obrigado pelo feedback.</p>
-            </div>
-
-        </div>
-
     </div>
 
-    <footer class="pro-footer">
-        <div class="footer-content">
-            <p>&copy; 2024 PRÁTICAMENTE TREINAMENTOS.</p>
-            <p class="footer-legal">CNPJ: 00.000.000/0001-00</p>
-            <div class="footer-badges"><i class="ph-shield-check"></i> Site Seguro (SSL)</div>
+    <div id="onboarding-modal" class="onboarding-overlay">
+        <div class="onboarding-box glass-panel">
+            <h3 class="gold-text" id="onboarding-title">Bem-vindo</h3>
+            <p id="onboarding-text" style="margin: 15px 0; color: #e0e0e0; line-height: 1.5;"></p>
+            <button id="btn-onboarding-next" class="btn-gold btn-full">Próximo Passo</button>
         </div>
-    </footer>
+    </div>
 
-    <script src="script.js"></script>
-    <script>verificarResultadoSalvo();</script>
-</body>
-</html>
+    <!-- Div oculta usada apenas para gerar o PDF formatado -->
+    <div id="pdf-content" style="display: none; padding: 40px; background: white; color: black; font-family: sans-serif;"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
