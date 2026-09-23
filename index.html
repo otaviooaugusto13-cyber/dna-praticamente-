@@ -2,187 +2,124 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DNA Comportamental - Praticamente</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DNA do Líder - PráticaMente</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f8b500">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
     <link rel="stylesheet" href="style.css">
+    <!-- Biblioteca Chart.js para o Gráfico Radar -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="neural-bg"></div>
-    <div class="main-bg-texture"></div>
+    <canvas id="particles-bg"></canvas>
 
-    <div class="container">
-        
-        <!-- ==========================================
-             ETAPA 1: TELA DE ABERTURA
-             ========================================== -->
-        <div class="glass-panel intro-content" id="telaAbertura">
-            <div class="brand-logo"><span class="silver-text">DNA</span> <span class="gold-text">PRATICAMENTE</span></div>
-            
-            <h1 class="intro-title" style="font-size: 2rem;">Decodifique seu <br><span class="gold-text">Modelo Mental</span></h1>
-            
-            <div class="pain-box">
-                <p class="pain-desc" style="text-align: center; font-size: 1rem; margin-bottom: 15px;">
-                    Isso não é um teste de personalidade. É um <strong>mapeamento de DNA Comportamental</strong>.
-                </p>
-                <p class="pain-desc" style="text-align: center; font-size: 0.9rem; color: #aaa;">
-                    Através de padrões da Neurociência e PNL, nossa inteligência artificial vai ler como o seu córtex pré-frontal processa decisões, estresse e foco.
-                </p>
+    <!-- Tela 1: Boas-Vindas -->
+    <div id="welcome-screen" class="screen active">
+        <div class="glass-panel text-center welcome-content">
+            <h1 class="main-title"><span class="gold-text">D.N.A.</span> <span class="silver-text">MENTORIA</span></h1>
+            <p class="subtitle">Liderança, carreira e vida em equilíbrio.</p>
+            <div class="welcome-text">
+                <p>Olá, tudo bem?</p>
+                <p>Bem-vindo ao seu ambiente de evolução prática. Durante as próximas <strong>12 semanas</strong>, este será o seu guia de execução e mapeamento de perfil.</p>
             </div>
-
-            <button class="btn-cta" onclick="iniciarMapeamento()">Iniciar Mapeamento</button>
+            <button id="btn-next-register" class="btn-gold btn-full">Avançar</button>
         </div>
-
-
-        <!-- ==========================================
-             ETAPA 2: O TESTE (PERGUNTAS)
-             ========================================== -->
-        <div class="glass-panel hidden" id="painelQuiz">
-            <div class="step-counter">Mapeamento em Andamento...</div>
-            
-            <!-- COLOQUE SUAS PERGUNTAS AQUI -->
-            <div class="question-text">Exemplo de Pergunta 1: Como você reage sob pressão?</div>
-            
-            <div class="radio-group" style="margin-bottom: 30px;">
-                <label class="radio-label">
-                    <input type="radio" name="p1" value="A">
-                    Ajo por instinto e resolvo rápido.
-                </label>
-                <label class="radio-label">
-                    <input type="radio" name="p1" value="B">
-                    Analiso todas as opções antes de agir.
-                </label>
-            </div>
-            
-            <!-- Botão que finaliza o teste e chama o Teaser -->
-            <button class="btn-cta" onclick="finalizarTeste()">Processar Padrões</button>
-        </div>
-
-
-        <!-- ==========================================
-             ETAPA 3: O TEASER E AS 12 SEMANAS (FUNIL)
-             ========================================== -->
-        <div class="glass-panel text-center hidden" id="painelTeaser">
-            <div class="brand-logo"><span class="silver-text">ANÁLISE</span> <span class="gold-text">INICIAL</span></div>
-            
-            <div class="pain-box border-gold" style="text-align: center;">
-                <h3 style="color: white; margin-bottom: 10px;">Perfil Base: <span class="gold-text" id="resultadoSuperficial">Calculando...</span></h3>
-                
-                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px; line-height: 1.5;">
-                    <i class="fas fa-brain" style="color: var(--gold); margin-right: 5px;"></i>
-                    Nossa IA está cruzando seus dados, analisando os padrões do seu córtex pré-frontal e gerando o seu Laudo Comportamental Definitivo.
-                </p>
-                <div class="spinner" style="width: 30px; height: 30px; margin: 0 auto; border-width: 2px;"></div>
-            </div>
-
-            <div class="instruction-box" style="margin-top: 25px;">
-                <div class="instruction-title">Desbloqueie o Laudo Completo</div>
-                <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 15px;">O ano agora tem 12 semanas. Para liberar a sua análise profunda, firme seu compromisso de curto prazo abaixo.</p>
-                
-                <!-- COLOQUE SUA URL DO FORMSUBMIT NO ACTION ABAIXO -->
-                <form id="formDozeSemanas" action="SUA_URL_DO_FORMSUBMIT_AQUI" method="POST">
-                    <div class="input-group">
-                        <i class="fas fa-flag-checkered input-icon"></i>
-                        <input type="text" name="meta_principal" class="input-glass" placeholder="Qual a sua Meta para 12 semanas?" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-fire input-icon"></i>
-                        <input type="text" name="motivacao" class="input-glass" placeholder="Por que isso é inegociável?" required>
-                    </div>
-
-                    <div class="cta-box" style="margin-top: 20px;">
-                        <button type="submit" class="btn-cta">Firmar Compromisso & Liberar Laudo</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-        <!-- ==========================================
-             ETAPA 4: RESULTADO FINAL COMPLETO
-             ========================================== -->
-        <div class="glass-panel hidden" id="telaResultadoFinal">
-            <div class="brand-logo"><span class="gold-text">LAUDO</span> <span class="silver-text">COMPLETO</span></div>
-            
-            <!-- O nome do perfil profundo vai aparecer aqui -->
-            <h2 class="archetype-title text-center" id="resultadoProfundoNome">Perfil X</h2>
-            
-            <div class="pain-box">
-                <p class="pain-desc">Seu mapa comportamental completo e detalhado entra aqui (pontos fortes, pontos cegos, etc).</p>
-            </div>
-            
-            <button class="banner-btn-refazer" onclick="location.reload()" style="margin-top: 20px; width: 100%;">Refazer Mapeamento</button>
-        </div>
-
     </div>
 
-    <!-- ==========================================
-         LÓGICA JAVASCRIPT DO FUNIL
-         ========================================== -->
-    <script>
-        let resultadoCalculadoFinal = ""; 
+    <!-- Tela 2: Credenciamento -->
+    <div id="register-screen" class="screen">
+        <div class="glass-panel welcome-content">
+            <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
+            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">
+                Configure seu acesso corporativo.
+            </p>
+            <form id="registration-form">
+                <div class="input-group"><label>Nome Completo (Digite 'admin' para teste rápido)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
+                <div class="input-group"><label>WhatsApp</label><input type="tel" id="user-phone" required placeholder="(00) 00000-0000"></div>
+                <div class="input-group"><label>E-mail Corporativo</label><input type="email" id="user-email" required placeholder="seuemail@praticamente.com"></div>
+                <div class="input-group"><label>Origem do Acesso</label><input type="text" id="user-referral" placeholder="Ex: Indicação, RH..."></div>
+                <button type="submit" class="btn-gold btn-full" style="margin-top: 15px;">Iniciar Jornada</button>
+            </form>
+        </div>
+    </div>
 
-        // 1. Inicia o Teste
-        function iniciarMapeamento() {
-            document.getElementById('telaAbertura').classList.add('hidden');
-            document.getElementById('painelQuiz').classList.remove('hidden');
-        }
+    <!-- Tela Intermediária: Skeleton Loading (Esqueleto de Carregamento) -->
+    <div id="loading-screen" class="screen">
+        <div class="container" style="max-width: 700px; width: 100%;">
+            <div class="glass-panel">
+                <div class="skeleton" style="width: 40%; height: 20px; margin-bottom: 30px;"></div>
+                <div class="skeleton" style="width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: 25px;"></div>
+                <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                    <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
+                </div>
+                <div class="skeleton" style="width: 60%; height: 25px; margin-bottom: 20px;"></div>
+                <div class="skeleton" style="width: 100%; height: 120px; border-radius: 12px; margin-bottom: 20px;"></div>
+            </div>
+        </div>
+    </div>
 
-        // 2. Finaliza as Perguntas e Mostra o Teaser
-        function finalizarTeste() {
-            // AQUI VOCÊ COLOCA A LÓGICA DE SOMA DOS PONTOS DO SEU CÓDIGO ANTIGO
-            // Por enquanto, coloquei um resultado fixo de exemplo:
-            resultadoCalculadoFinal = "Estrategista / Tipo 8"; 
-            
-            // Joga o nome no painel do meio
-            document.getElementById('resultadoSuperficial').innerText = resultadoCalculadoFinal;
+    <!-- Tela 3: Dashboard Principal -->
+    <div id="main-screen" class="screen">
+        <div id="progress-container"><div id="progress-fill"></div></div>
 
-            // Troca as telas
-            document.getElementById('painelQuiz').classList.add('hidden');
-            document.getElementById('painelTeaser').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        <header class="glass-header">
+            <h2 class="gold-text" style="font-size: 1.2rem;">DNA DO LÍDER</h2>
+            <div class="subtitle" style="font-size: 0.7rem; color: var(--gold-light);">Direção • Navegação • Ação</div>
+        </header>
 
-        // 3. Intercepta o envio das 12 Semanas e Mostra o Laudo
-        document.getElementById('formDozeSemanas').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+        <div class="container">
+            <div class="glass-panel" id="main-panel">
+                <div class="panel-header">
+                    <div id="user-greeting" class="greeting-text"></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btn-focus" class="btn-logout" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
+                        <button id="btn-logout" class="btn-logout">Sair</button>
+                    </div>
+                </div>
 
-            const btn = document.querySelector('#formDozeSemanas .btn-cta');
-            const textoOriginal = btn.innerHTML;
-            btn.innerHTML = "Decodificando Córtex Pré-Frontal...";
-            btn.disabled = true;
+                <div class="video-container" id="video-area">
+                    <span class="video-label">[ Briefing Semanal em Vídeo ]</span>
+                </div>
+                
+                <div class="week-selector" id="weekSelector"></div>
+                <h2 id="weekTitle" class="gold-text week-title">Carregando...</h2>
+                
+                <div id="formContainer"></div>
 
-            const formData = new FormData(this);
+                <div id="resultsContainer" class="results-area">
+                    <h3 class="gold-text" style="margin-bottom: 15px;">Seu Mapa D.N.A. Estratégico</h3>
+                    <p style="font-size: 0.9rem; color: var(--silver-main); margin-bottom: 20px;">Análise lexical baseada na sua PNL durante a jornada.</p>
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <h4 id="diagnostico-titulo" style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">Aguardando dados...</h4>
+                        <p id="diagnostico-desc" style="color: var(--gold-light); font-size: 0.85rem;"></p>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
 
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Passa o resultado para a última tela
-                    document.getElementById('resultadoProfundoNome').innerText = resultadoCalculadoFinal;
-                    
-                    // Troca as telas
-                    document.getElementById('painelTeaser').classList.add('hidden');
-                    document.getElementById('telaResultadoFinal').classList.remove('hidden');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    alert("Erro no servidor. Verifique a URL do FormSubmit.");
-                    btn.innerHTML = textoOriginal;
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert("Sem conexão. Verifique sua internet.");
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-            });
-        });
-    </script>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Todas as alterações são salvas automaticamente.</span>
+                    <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar Manualmente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-overlay">
+        <div class="onboarding-box glass-panel">
+            <h3 class="gold-text" id="onboarding-title">Bem-vindo ao Praticamente</h3>
+            <p id="onboarding-text" style="margin: 15px 0; color: #e0e0e0; line-height: 1.5;"></p>
+            <button id="btn-onboarding-next" class="btn-gold btn-full">Próximo Passo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
