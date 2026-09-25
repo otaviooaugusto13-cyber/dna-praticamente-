@@ -1,14 +1,24 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DNA do Líder - PráticaMente</title>
-    
+
+    <!-- Cabeçalhos de segurança: restringe de onde scripts/estilos podem ser carregados -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube.com; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f8b500">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AC%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     
     <!-- Bibliotecas Externas -->
@@ -17,7 +27,7 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
-    <canvas id="particles-bg"></canvas>
+    <canvas id="particles-bg" aria-hidden="true"></canvas>
 
     <div id="welcome-screen" class="screen active">
         <div class="glass-panel text-center welcome-content">
@@ -36,10 +46,10 @@
             <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
             <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">Configure seu acesso corporativo.</p>
             <form id="registration-form">
-                <div class="input-group"><label>Nome Completo (Digite 'admin' para bypass)</label><input type="text" id="user-name" required placeholder="Ex: Otavio Augusto"></div>
-                <div class="input-group"><label>WhatsApp</label><input type="tel" id="user-phone" required placeholder="(00) 00000-0000"></div>
-                <div class="input-group"><label>E-mail Corporativo</label><input type="email" id="user-email" required placeholder="seuemail@praticamente.com"></div>
-                <div class="input-group"><label>Origem do Acesso</label><input type="text" id="user-referral" placeholder="Ex: Indicação, RH..."></div>
+                <div class="input-group"><label for="user-name">Nome Completo</label><input type="text" id="user-name" required minlength="2" autocomplete="name" placeholder="Ex: Otavio Augusto"></div>
+                <div class="input-group"><label for="user-phone">WhatsApp</label><input type="tel" id="user-phone" required autocomplete="tel" placeholder="(00) 00000-0000"></div>
+                <div class="input-group"><label for="user-email">E-mail Corporativo</label><input type="email" id="user-email" required autocomplete="email" placeholder="seuemail@praticamente.com"></div>
+                <div class="input-group"><label for="user-referral">Origem do Acesso</label><input type="text" id="user-referral" autocomplete="off" placeholder="Ex: Indicação, RH..."></div>
                 <button type="submit" class="btn-gold btn-full" style="margin-top: 15px;">Iniciar Jornada</button>
             </form>
         </div>
@@ -74,8 +84,8 @@
                 <div class="panel-header">
                     <div id="user-greeting" class="greeting-text"></div>
                     <div style="display: flex; gap: 10px;">
-                        <button id="btn-focus" class="btn-logout" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
-                        <button id="btn-logout" class="btn-logout">Sair</button>
+                        <button id="btn-focus" class="btn-logout" aria-pressed="false" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
+                        <button id="btn-logout" class="btn-logout" aria-label="Sair e limpar dados de login deste navegador">Sair</button>
                     </div>
                 </div>
 
@@ -112,6 +122,8 @@
                     <span id="save-status" style="color: var(--silver-dark); font-size: 0.8rem; font-style: italic;">Salvo automaticamente.</span>
                     <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar</button>
                 </div>
+
+                <p class="storage-note">🔒 Suas respostas ficam salvas apenas neste navegador/dispositivo, não em um servidor externo. Use o mesmo navegador para continuar sua jornada, e evite usá-lo em computadores compartilhados.</p>
             </div>
         </div>
     </div>
