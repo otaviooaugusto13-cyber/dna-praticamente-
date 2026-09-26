@@ -1,4 +1,3 @@
-
 /* ============================================================
    DNA DO LÍDER — script.js
    Observação importante sobre segurança:
@@ -90,8 +89,24 @@ function notifyNewRegistration(userData) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    verificarCadastro();
+    // NOVA LÓGICA: Detetar se o utilizador está a voltar do Mercado Pago com sucesso
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'approved') {
+        // Oculta o ecrã inicial e mostra o credenciamento
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('register-screen').classList.add('active');
+        
+        // Limpa a URL para não ficar com o link longo do Mercado Pago
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Mostra a notificação
+        setTimeout(() => showToast("Pagamento confirmado! Preencha o seu credenciamento."), 500);
+    } else {
+        // Se não for um retorno de pagamento, verifica se já existe sessão salva
+        verificarCadastro();
+    }
 
+    // Ação do botão "Já efetuei o pagamento"
     document.getElementById('btn-next-register').addEventListener('click', () => {
         document.getElementById('welcome-screen').classList.remove('active');
         document.getElementById('register-screen').classList.add('active');
@@ -113,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById('btn-logout').addEventListener('click', () => {
-        if (!confirm('Sair vai manter suas respostas salvas neste navegador. Deseja continuar?')) return;
+        if (!confirm('Sair vai manter as suas respostas salvas neste navegador. Deseja continuar?')) return;
         safeRemove('dna_user_data');
         stopYouTubeTracking();
         location.reload();
@@ -639,6 +654,9 @@ function animateParticles() {
                 ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
             }
         }
+    }
+}
+initParticles(); animateParticles();
     }
 }
 initParticles(); animateParticles();
