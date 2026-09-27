@@ -6,11 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>DNA do Líder - PráticaMente</title>
 
-    <!-- Cabeçalhos de segurança: restringe de onde scripts/estilos podem ser carregados -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube.com; connect-src 'self'; base-uri 'self'; form-action 'self';">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f8b500">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,41 +25,40 @@
 <body>
     <canvas id="particles-bg" aria-hidden="true"></canvas>
 
+    <!-- TELA 1: LOGIN COM GOOGLE -->
     <div id="welcome-screen" class="screen active">
         <div class="glass-panel text-center welcome-content">
             <h1 class="main-title"><span class="gold-text">D.N.A.</span> <span class="silver-text">MENTORIA</span></h1>
             <p class="subtitle">Liderança, carreira e vida em equilíbrio.</p>
             <div class="welcome-text">
-                <p>Olá, tudo bem?</p>
-                <p>Bem-vindo ao seu ambiente de evolução prática. Durante as próximas <strong>12 semanas</strong>, este será o seu guia de execução e mapeamento de perfil.</p>
+                <p>Bem-vindo ao seu ambiente de evolução prática.</p>
+                <p>Faça login com a sua conta Google para acessar seu painel de 12 semanas. O sistema verificará automaticamente a sua licença de acesso.</p>
             </div>
             
-            <!-- Link direto para o Mercado Pago -->
-            <a href="COLE_AQUI_SEU_LINK_DO_MERCADO_PAGO" class="btn-gold btn-full" style="text-decoration: none; display: inline-block; text-align: center; margin-bottom: 15px;">
-                Comprar Acesso - R$ 97,00
-            </a>
-            
-            <!-- Botão para quem já comprou ou está a voltar para o site -->
-            <button id="btn-next-register" class="btn-logout" style="width: 100%; border-color: var(--gold-main); color: var(--gold-main);">
-                Já efetuei o pagamento
+            <button id="btn-google-login" class="btn-gold btn-full" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px 0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Entrar com o Google
             </button>
         </div>
     </div>
 
-    <div id="register-screen" class="screen">
-        <div class="glass-panel welcome-content">
-            <h2 class="gold-text text-center" style="margin-bottom: 20px;">Credenciamento</h2>
-            <p class="text-center" style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 25px;">Configure seu acesso corporativo.</p>
-            <form id="registration-form">
-                <div class="input-group"><label for="user-name">Nome Completo</label><input type="text" id="user-name" required minlength="2" autocomplete="name" placeholder="Ex: Otavio Augusto"></div>
-                <div class="input-group"><label for="user-phone">WhatsApp</label><input type="tel" id="user-phone" required autocomplete="tel" placeholder="(00) 00000-0000"></div>
-                <div class="input-group"><label for="user-email">E-mail Corporativo</label><input type="email" id="user-email" required autocomplete="email" placeholder="seuemail@praticamente.com"></div>
-                <div class="input-group"><label for="user-referral">Origem do Acesso</label><input type="text" id="user-referral" autocomplete="off" placeholder="Ex: Indicação, RH..."></div>
-                <button type="submit" class="btn-gold btn-full" style="margin-top: 15px;">Iniciar Jornada</button>
-            </form>
+    <!-- TELA 2: BLOQUEIO / COMPRAR (Só aparece se o e-mail não estiver na lista VIP) -->
+    <div id="payment-screen" class="screen">
+        <div class="glass-panel text-center welcome-content">
+            <h2 class="gold-text">Acesso Restrito</h2>
+            <p style="margin: 20px 0; color: #e0e0e0;">Não encontramos uma inscrição ativa para o e-mail:<br><strong id="user-email-display" style="color: var(--gold-main); word-break: break-all;"></strong></p>
+            <p style="margin-bottom: 25px; font-size: 0.9rem;">Se você já efetuou o pagamento, certifique-se de estar usando a exata mesma conta Google da compra.</p>
+            
+            <a href="COLE_AQUI_SEU_LINK_DO_MERCADO_PAGO" class="btn-gold btn-full" style="text-decoration: none; display: inline-block; text-align: center; margin-bottom: 15px;">
+                Comprar Acesso - R$ 97,00
+            </a>
+            <button id="btn-logout-payment" class="btn-logout" style="width: 100%; border-color: var(--silver-dark); color: var(--silver-main);">
+                Sair e tentar com outro e-mail
+            </button>
         </div>
     </div>
 
+    <!-- TELA 3: CARREGANDO -->
     <div id="loading-screen" class="screen">
         <div class="container" style="max-width: 700px; width: 100%;">
             <div class="glass-panel">
@@ -81,6 +75,7 @@
         </div>
     </div>
 
+    <!-- TELA 4: PAINEL PRINCIPAL -->
     <div id="main-screen" class="screen">
         <div id="progress-container"><div id="progress-fill"></div></div>
 
@@ -99,7 +94,6 @@
                     </div>
                 </div>
 
-                <!-- Container do Vídeo YT -->
                 <div class="video-container" id="video-area">
                     <div id="youtube-player"></div>
                     <div id="video-overlay" class="video-overlay"><span class="video-label">Carregando Briefing...</span></div>
@@ -122,7 +116,6 @@
                     <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center; margin-bottom: 30px;">
                         <canvas id="radarChart"></canvas>
                     </div>
-                    <!-- Botão de Exportação PDF -->
                     <button id="btn-export-pdf" class="btn-gold btn-full" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                         <span style="font-size: 1.2rem;">📄</span> Gerar Relatório Executivo (PDF)
                     </button>
@@ -133,7 +126,7 @@
                     <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar</button>
                 </div>
 
-                <p class="storage-note">🔒 Suas respostas ficam salvas apenas neste navegador/dispositivo, não em um servidor externo. Use o mesmo navegador para continuar sua jornada, e evite usá-lo em computadores compartilhados.</p>
+                <p class="storage-note">🔒 Suas respostas ficam salvas apenas neste navegador/dispositivo, não em um servidor externo. Use o mesmo navegador para continuar sua jornada.</p>
             </div>
         </div>
     </div>
@@ -146,9 +139,9 @@
         </div>
     </div>
 
-    <!-- Div oculta usada apenas para gerar o PDF formatado -->
     <div id="pdf-content" style="display: none; padding: 40px; background: white; color: black; font-family: sans-serif;"></div>
 
-    <script src="script.js"></script>
+    <!-- O SCRIPT AGORA É DO TIPO MODULE PARA IMPORTAR O FIREBASE -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>
