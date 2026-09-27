@@ -19,6 +19,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+// Dados das semanas
 const courseData = {
     1: { title: "Semana 1: Identidade do Líder", videoId: null, questions: [ { id: "s1_q1", label: "Estilo de liderança atual:" }, { id: "s1_q2", label: "Plano de Ação (Pontos Fortes):" } ] },
     2: { title: "Semana 2: Meu Perfil", videoId: null, questions: [ { id: "s2_q1", label: "Mapeamento (Características predominantes):" } ] },
@@ -32,10 +33,9 @@ let ytPlayer = null;
 let ytProgressInterval = null;
 let currentWeek = 1;
 
-/* --- SISTEMA DE LOGIN GOOGLE E BANCO DE DADOS --- */
+/* --- EVENTO PRINCIPAL QUE CARREGA O BOTÃO --- */
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Botão de Login do Google
     const btnLogin = document.getElementById('btn-google-login');
     if (btnLogin) {
         btnLogin.addEventListener('click', async () => {
@@ -50,64 +50,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Botões de Sair
     const handleLogout = async () => {
         if (!confirm('Sair encerrará sua sessão. Deseja continuar?')) return;
         await signOut(auth);
         location.reload();
     };
+    
     document.getElementById('btn-logout').addEventListener('click', handleLogout);
     document.getElementById('btn-logout-payment').addEventListener('click', handleLogout);
-
-    // MODO FOCO
-    document.getElementById('btn-focus').addEventListener('click', () => {
-        document.body.classList.toggle('focus-mode');
-        const btnFoco = document.getElementById('btn-focus');
-        const active = document.body.classList.contains('focus-mode');
-        btnFoco.setAttribute('aria-pressed', String(active));
-        if (active) {
-            btnFoco.innerText = 'Sair do Foco';
-            btnFoco.style.background = 'rgba(248, 181, 0, 0.2)';
-            showToast('Modo Foco ativado. Elimine distrações.');
-        } else {
-            btnFoco.innerText = 'Modo Foco';
-            btnFoco.style.background = 'transparent';
-        }
-    });
-
     document.getElementById('btnSave').addEventListener('click', () => saveData(false));
 });
 
-// Observador de Estado: Deteta automaticamente se o utilizador está logado
+/* --- VERIFICAÇÃO DE USUÁRIO E BANCO DE DADOS --- */
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // Usuário fez login. Mostrar tela de loading enquanto verifica pagamento no banco
         ocultarTodasTelas();
         document.getElementById('loading-screen').classList.add('active');
 
         const emailFormatado = user.email.toLowerCase();
         
         try {
-            // Verifica no banco de dados na coleção "pagantes" se existe um documento com o email dele
             const docRef = doc(db, "pagantes", emailFormatado);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                // E-mail ENCONTRADO na lista VIP! Acesso liberado.
                 iniciarSessaoAprovada(user.displayName);
             } else {
-                // E-mail NÃO ENCONTRADO. Mostrar botão de compra.
                 ocultarTodasTelas();
                 document.getElementById('payment-screen').classList.add('active');
                 document.getElementById('user-email-display').innerText = emailFormatado;
             }
         } catch (erro) {
             console.error("Erro ao verificar banco de dados:", erro);
-            showToast("Erro ao comunicar com o servidor de licenças.", true);
+            showToast("Erro ao comunicar com o servidor.", true);
         }
 
     } else {
-        // Usuário não está logado. Mostrar tela inicial de login.
         ocultarTodasTelas();
         document.getElementById('welcome-screen').classList.add('active');
         const btnLogin = document.getElementById('btn-google-login');
@@ -134,48 +112,14 @@ function iniciarSessaoAprovada(nomeUsuario) {
         buildWeekSelector();
         loadWeek(1);
         updateProgress();
-        iniciarOnboarding();
-        loadYouTubeAPI();
     }, 800);
 }
 
-/* --- ARMAZENAMENTO SEGURO (MANTIDO LOCAL PARA AS RESPOSTAS) --- */
+/* --- FUNÇÕES DO PAINEL (SALVAR, NAVEGAR) --- */
 function safeGet(key) { try { return localStorage.getItem(key); } catch (err) { return null; } }
 function safeSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (err) { return false; } }
 function safeJSON(key, fallback) { const raw = safeGet(key); if (!raw) return fallback; try { return JSON.parse(raw); } catch (err) { return fallback; } }
 
-/* --- ONBOARDING GUIADO --- */
-function iniciarOnboarding() {
-    if (!safeGet('dna_onboarding_done')) {
-        const modal = document.getElementById('onboarding-modal');
-        const title = document.getElementById('onboarding-title');
-        const text = document.getElementById('onboarding-text');
-        const btnNext = document.getElementById('btn-onboarding-next');
-
-        modal.classList.add('active');
-        const steps = [
-            { t: "Bem-vindo ao Praticamente", d: "Sua plataforma corporativa de mentoria executiva. Vamos fazer um tour rápido." },
-            { t: "1. Briefing Semanal", d: "Assista ao vídeo no topo do painel para alinhar a estratégia da semana." },
-            { t: "2. Auto-Save Inteligente", d: "Preencha seu plano de ação com tranquilidade. O sistema salva tudo automaticamente." },
-            { t: "3. Mapa Estratégico", d: "Na Semana 12, nossa IA analisará seu vocabulário e gerará seu gráfico comportamental." }
-        ];
-
-        let currentStep = 0;
-        btnNext.onclick = () => {
-            currentStep++;
-            if (currentStep < steps.length) {
-                title.innerText = steps[currentStep].t; text.innerText = steps[currentStep].d;
-                if (currentStep === steps.length - 1) btnNext.innerText = "Começar Jornada";
-            } else {
-                modal.classList.remove('active');
-                safeSet('dna_onboarding_done', 'true');
-                showToast("Ambiente liberado para execução.");
-            }
-        };
-    }
-}
-
-/* --- NAVEGAÇÃO E PROGRESSO --- */
 function buildWeekSelector() {
     const selector = document.getElementById('weekSelector');
     selector.innerHTML = '';
@@ -193,19 +137,18 @@ function loadWeek(weekNumber) {
     const activeBtn = document.getElementById(`btn-week-${weekNumber}`);
     if (activeBtn) activeBtn.classList.add('active');
 
-    const weekInfo = courseData[weekNumber] || { title: `Semana ${weekNumber}: Em Breve`, videoId: null, questions: [{ id: `s${weekNumber}_q1`, label: "Rota de Execução (Anotações):" }] };
+    const weekInfo = courseData[weekNumber] || { title: `Semana ${weekNumber}: Em Breve`, videoId: null, questions: [{ id: `s${weekNumber}_q1`, label: "Rota de Execução:" }] };
     document.getElementById('weekTitle').innerText = weekInfo.title;
     const formContainer = document.getElementById('formContainer'); formContainer.innerHTML = '';
-    document.getElementById('resultsContainer').style.display = (weekNumber === 12) ? 'block' : 'none';
-
-    if (weekNumber === 12) gerarDiagnosticoInteligente();
+    
     const savedData = safeJSON('dna_respostas', {});
 
     weekInfo.questions.forEach(q => {
         const div = document.createElement('div'); div.className = 'input-group';
         const label = document.createElement('label'); label.innerText = q.label; label.setAttribute('for', q.id);
         const textarea = document.createElement('textarea');
-        textarea.id = q.id; textarea.value = savedData[q.id] || ''; textarea.placeholder = "Descreva sua aplicação prática...";
+        textarea.id = q.id; textarea.value = savedData[q.id] || ''; 
+        textarea.placeholder = "Descreva sua aplicação prática...";
         textarea.addEventListener('input', () => {
             document.getElementById('save-status').innerText = 'Digitando…';
             document.getElementById('save-status').style.color = 'var(--gold-main)';
@@ -213,7 +156,6 @@ function loadWeek(weekNumber) {
         });
         div.appendChild(label); div.appendChild(textarea); formContainer.appendChild(div);
     });
-    setupVideoForWeek(weekInfo);
 }
 
 function saveData(silent = false) {
@@ -226,7 +168,7 @@ function saveData(silent = false) {
     setTimeout(() => {
         if (ok) {
             statusText.innerText = 'Salvo neste dispositivo.'; statusText.style.color = 'var(--silver-dark)';
-            if (!silent) showToast('Rota estratégica salva neste dispositivo.');
+            if (!silent) showToast('Estratégia salva com sucesso.');
         } else {
             statusText.innerText = 'Falha ao salvar.'; statusText.style.color = 'var(--error-color)';
         }
@@ -256,93 +198,6 @@ function showToast(message, isError = false) {
     clearTimeout(toast._hideTimer); toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 3500);
 }
 
-/* --- VÍDEO (YouTube) --- */
-let ytApiReady = false;
-function loadYouTubeAPI() {
-    if (window.YT && window.YT.Player) { ytApiReady = true; return; }
-    window.onYouTubeIframeAPIReady = () => { ytApiReady = true; setupVideoForWeek(courseData[currentWeek]); };
-}
-
-function setupVideoForWeek(weekInfo) {
-    const overlay = document.getElementById('video-overlay');
-    const lockMsg = document.getElementById('video-lock-msg');
-    const fill = document.getElementById('video-progress-fill');
-    stopYouTubeTracking(); fill.style.width = '0%';
-
-    if (!weekInfo || !weekInfo.videoId) {
-        overlay.classList.add('hidden'); lockMsg.style.display = 'none'; setFormLocked(false); return;
-    }
-    overlay.classList.remove('hidden'); overlay.querySelector('.video-label').innerText = 'Carregando briefing...'; lockMsg.style.display = 'block';
-
-    const alreadyWatched = safeGet(`dna_video_watched_s${currentWeek}`) === 'true';
-    setFormLocked(!alreadyWatched);
-    if (alreadyWatched) { fill.style.width = '100%'; lockMsg.style.display = 'none'; }
-    if (!ytApiReady || !window.YT) return;
-
-    const container = document.getElementById('youtube-player'); container.innerHTML = '';
-    const playerDiv = document.createElement('div'); container.appendChild(playerDiv);
-
-    ytPlayer = new YT.Player(playerDiv, {
-        videoId: weekInfo.videoId, playerVars: { rel: 0, modestbranding: 1 },
-        events: { onReady: () => { overlay.classList.add('hidden'); }, onStateChange: onYouTubeStateChange }
-    });
-}
-function onYouTubeStateChange(event) {
-    if (event.data === YT.PlayerState.PLAYING) { clearInterval(ytProgressInterval); ytProgressInterval = setInterval(trackYouTubeProgress, 1000); } 
-    else { clearInterval(ytProgressInterval); }
-}
-function trackYouTubeProgress() {
-    if (!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
-    const ratio = Math.min(ytPlayer.getCurrentTime() / ytPlayer.getDuration(), 1);
-    document.getElementById('video-progress-fill').style.width = (ratio * 100) + '%';
-    if (ratio >= WATCH_THRESHOLD) {
-        safeSet(`dna_video_watched_s${currentWeek}`, 'true'); document.getElementById('video-lock-msg').style.display = 'none';
-        setFormLocked(false); clearInterval(ytProgressInterval);
-    }
-}
-function stopYouTubeTracking() { clearInterval(ytProgressInterval); ytProgressInterval = null; }
-function setFormLocked(locked) { document.querySelectorAll('#formContainer textarea').forEach(t => { t.disabled = locked; }); }
-
-/* --- ANÁLISE LEXICAL --- */
-function gerarDiagnosticoInteligente() {
-    const textoCompleto = Object.values(safeJSON('dna_respostas', {})).join(" ").toLowerCase();
-    const perfis = {
-        "Executor": { desc: "Focado em metas e agilidade.", palavras: ["meta", "resultado", "foco", "rápido", "agilidade", "prática", "ação", "equipe", "vencer", "prazo"], pontos: 0 },
-        "Analítico": { desc: "Focado em processos e estrutura.", palavras: ["processo", "análise", "detalhe", "estrutura", "regra", "organização", "entender", "lógica", "método"], pontos: 0 },
-        "Relacional": { desc: "Focado em pessoas e harmonia.", palavras: ["pessoas", "ajudar", "empatia", "ouvir", "juntos", "harmonia", "comunicação", "sentimento", "apoio"], pontos: 0 }
-    };
-
-    let totalEncontradas = 0;
-    for (const d of Object.values(perfis)) { d.palavras.forEach(p => { const matches = textoCompleto.match(new RegExp("\\b" + p + "\\b", "g")); if (matches) { d.pontos += matches.length; totalEncontradas += matches.length; } }); }
-
-    let pDom = "Híbrido (Em Análise)", dDom = "Escreva seus planos de ação para a IA processar.", mPts = 0;
-    if (totalEncontradas > 2) { for (const [p, d] of Object.entries(perfis)) { if (d.pontos > mPts) { mPts = d.pontos; pDom = p; dDom = d.desc; } } }
-    
-    document.getElementById('diagnostico-titulo').innerText = `Traço Dominante: ${pDom}`;
-    document.getElementById('diagnostico-desc').innerText = dDom;
-    renderRadarChart(perfis["Executor"].pontos, perfis["Analítico"].pontos, perfis["Relacional"].pontos);
-}
-
-function renderRadarChart(pExe, pAna, pRel) {
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    if (radarChartInstance) radarChartInstance.destroy();
-    if (pExe === 0 && pAna === 0 && pRel === 0) { pExe = 1; pAna = 1; pRel = 1; }
-    radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: { labels: ['Executor', 'Analítico', 'Relacional'], datasets: [{ data: [pExe, pAna, pRel], backgroundColor: 'rgba(248, 181, 0, 0.2)', borderColor: '#f8b500', borderWidth: 2 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { r: { pointLabels: { color: '#e0e0e0' }, ticks: { display: false } } }, plugins: { legend: { display: false } } }
-    });
-}
-
-/* --- EXPORTAÇÃO PDF --- */
-const exportBtn = document.getElementById('btn-export-pdf');
-if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-        if (typeof html2pdf === 'undefined') return showToast('PDF indisponível.', true);
-        html2pdf().from(document.getElementById('resultsContainer')).set({ margin: 10, filename: 'DNA-do-Lider-Relatorio.pdf', html2canvas: { scale: 2, backgroundColor: '#0a0a0c' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save();
-    });
-}
-
 /* --- PARTÍCULAS DE FUNDO --- */
 const canvas = document.getElementById('particles-bg');
 const ctx = canvas.getContext('2d');
@@ -364,6 +219,5 @@ function initParticles() {
 }
 function animateParticles() {
     requestAnimationFrame(animateParticles); ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => p.update());
-    for (let a = 0; a < particlesArray.length; a++) { for (let b = a; b < particlesArray.length; b++) { let dist = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2); if (dist < (canvas.width / 7) * (canvas.height / 7)) { ctx.strokeStyle = `rgba(248, 181, 0, ${0.4 - (dist / 25000)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); } } }
 }
 initParticles(); animateParticles();
