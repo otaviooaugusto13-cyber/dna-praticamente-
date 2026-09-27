@@ -6,7 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>DNA do Líder - PráticaMente</title>
 
-    <link rel="manifest" href="manifest.json">
+    <!-- TRAVA DE SEGURANÇA: Avisa se não estiver usando o Live Server -->
+    <script>
+        if (window.location.protocol === 'file:') {
+            alert("ATENÇÃO OTÁVIO: O Firebase bloqueia o login se você abrir o arquivo com 2 cliques (file:///). O botão não vai funcionar! Feche esta aba, abra o projeto no VS Code e clique em 'Go Live' no canto inferior direito.");
+        }
+    </script>
+
     <meta name="theme-color" content="#f8b500">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AC%3C/text%3E%3C/svg%3E">
@@ -42,14 +48,14 @@
         </div>
     </div>
 
-    <!-- TELA 2: BLOQUEIO / COMPRAR (Só aparece se o e-mail não estiver na lista VIP) -->
+    <!-- TELA 2: BLOQUEIO / COMPRAR -->
     <div id="payment-screen" class="screen">
         <div class="glass-panel text-center welcome-content">
             <h2 class="gold-text">Acesso Restrito</h2>
             <p style="margin: 20px 0; color: #e0e0e0;">Não encontramos uma inscrição ativa para o e-mail:<br><strong id="user-email-display" style="color: var(--gold-main); word-break: break-all;"></strong></p>
             <p style="margin-bottom: 25px; font-size: 0.9rem;">Se você já efetuou o pagamento, certifique-se de estar usando a exata mesma conta Google da compra.</p>
             
-            <a href="COLE_AQUI_SEU_LINK_DO_MERCADO_PAGO" class="btn-gold btn-full" style="text-decoration: none; display: inline-block; text-align: center; margin-bottom: 15px;">
+            <a href="#" class="btn-gold btn-full" style="text-decoration: none; display: inline-block; text-align: center; margin-bottom: 15px;">
                 Comprar Acesso - R$ 97,00
             </a>
             <button id="btn-logout-payment" class="btn-logout" style="width: 100%; border-color: var(--silver-dark); color: var(--silver-main);">
@@ -70,7 +76,6 @@
                     <div class="skeleton" style="width: 45px; height: 45px; border-radius: 50%;"></div>
                 </div>
                 <div class="skeleton" style="width: 60%; height: 25px; margin-bottom: 20px;"></div>
-                <div class="skeleton" style="width: 100%; height: 120px; border-radius: 12px; margin-bottom: 20px;"></div>
             </div>
         </div>
     </div>
@@ -90,7 +95,7 @@
                     <div id="user-greeting" class="greeting-text"></div>
                     <div style="display: flex; gap: 10px;">
                         <button id="btn-focus" class="btn-logout" aria-pressed="false" style="border-color: var(--gold-main); color: var(--gold-main);">Modo Foco</button>
-                        <button id="btn-logout" class="btn-logout" aria-label="Sair e limpar dados de login deste navegador">Sair</button>
+                        <button id="btn-logout" class="btn-logout" aria-label="Sair">Sair</button>
                     </div>
                 </div>
 
@@ -108,7 +113,7 @@
 
                 <div id="resultsContainer" class="results-area">
                     <h3 class="gold-text" style="margin-bottom: 15px;">Seu Mapa D.N.A. Estratégico</h3>
-                    <p style="font-size: 0.9rem; color: var(--silver-main); margin-bottom: 20px;">Análise lexical baseada na sua PNL durante a jornada.</p>
+                    <p style="font-size: 0.9rem; color: var(--silver-main); margin-bottom: 20px;">Análise lexical baseada na sua jornada.</p>
                     <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
                         <h4 id="diagnostico-titulo" style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">Aguardando dados...</h4>
                         <p id="diagnostico-desc" style="color: var(--gold-light); font-size: 0.85rem;"></p>
@@ -126,22 +131,12 @@
                     <button class="btn-gold" id="btnSave" style="width: auto;">Consolidar</button>
                 </div>
 
-                <p class="storage-note">🔒 Suas respostas ficam salvas apenas neste navegador/dispositivo, não em um servidor externo. Use o mesmo navegador para continuar sua jornada.</p>
+                <p class="storage-note">🔒 Suas respostas ficam salvas apenas neste navegador/dispositivo.</p>
             </div>
         </div>
     </div>
 
-    <div id="onboarding-modal" class="onboarding-overlay">
-        <div class="onboarding-box glass-panel">
-            <h3 class="gold-text" id="onboarding-title">Bem-vindo</h3>
-            <p id="onboarding-text" style="margin: 15px 0; color: #e0e0e0; line-height: 1.5;"></p>
-            <button id="btn-onboarding-next" class="btn-gold btn-full">Próximo Passo</button>
-        </div>
-    </div>
-
-    <div id="pdf-content" style="display: none; padding: 40px; background: white; color: black; font-family: sans-serif;"></div>
-
-    <!-- O SCRIPT AGORA É DO TIPO MODULE PARA IMPORTAR O FIREBASE -->
+    <!-- O SCRIPT PRECISA SER MODULE PARA O FIREBASE FUNCIONAR -->
     <script type="module" src="script.js"></script>
 </body>
 </html>
